@@ -8,7 +8,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://mark-blog.vercel.app',
+  site: 'https://blog.teamnyongs.com',
 
   vite: {
     plugins: [tailwindcss()]
