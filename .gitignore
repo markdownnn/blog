@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# drafts: live inside content/posts/ for dev preview, but never committed
+src/content/posts/*.draft.md
+src/content/posts/*.draft.mdx
