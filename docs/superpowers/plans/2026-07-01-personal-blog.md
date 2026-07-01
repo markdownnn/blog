@@ -187,16 +187,17 @@ git add src/content/config.ts && git commit -m "feat: add posts and projects con
 Create `src/core/posts.test.ts`:
 ```ts
 // ASCII only. Pure-function tests for core/posts.ts.
+// NOTE: Astro 7 uses the glob-loader Content Layer API. Entries expose `.id` (NOT `.slug`).
 import { describe, it, expect } from 'vitest';
 import {
   filterPublished, sortByDateDesc, byTag, byCategory, byProject, toUrlSlug,
   type Post,
 } from './posts';
 
-function post(over: Partial<Post['data']> & { slug?: string }): Post {
-  const { slug = 'x', ...data } = over;
+function post(over: Partial<Post['data']> & { id?: string }): Post {
+  const { id = 'x', ...data } = over;
   return {
-    id: slug, slug, collection: 'posts',
+    id, collection: 'posts',
     data: {
       title: 't', description: 'd', date: new Date('2026-01-01'),
       category: 'notes', tags: [], draft: false, ...data,
@@ -206,39 +207,39 @@ function post(over: Partial<Post['data']> & { slug?: string }): Post {
 
 describe('filterPublished', () => {
   it('removes draft:true posts', () => {
-    const out = filterPublished([post({ slug: 'a' }), post({ slug: 'b', draft: true })]);
-    expect(out.map(p => p.slug)).toEqual(['a']);
+    const out = filterPublished([post({ id: 'a' }), post({ id: 'b', draft: true })]);
+    expect(out.map(p => p.id)).toEqual(['a']);
   });
 });
 
 describe('sortByDateDesc', () => {
   it('newest first', () => {
     const out = sortByDateDesc([
-      post({ slug: 'old', date: new Date('2026-01-01') }),
-      post({ slug: 'new', date: new Date('2026-06-01') }),
+      post({ id: 'old', date: new Date('2026-01-01') }),
+      post({ id: 'new', date: new Date('2026-06-01') }),
     ]);
-    expect(out.map(p => p.slug)).toEqual(['new', 'old']);
+    expect(out.map(p => p.id)).toEqual(['new', 'old']);
   });
 });
 
 describe('byTag', () => {
   it('keeps posts containing the tag', () => {
-    const out = byTag([post({ slug: 'a', tags: ['astro'] }), post({ slug: 'b', tags: ['saju'] })], 'astro');
-    expect(out.map(p => p.slug)).toEqual(['a']);
+    const out = byTag([post({ id: 'a', tags: ['astro'] }), post({ id: 'b', tags: ['saju'] })], 'astro');
+    expect(out.map(p => p.id)).toEqual(['a']);
   });
 });
 
 describe('byCategory', () => {
   it('filters by category', () => {
-    const out = byCategory([post({ slug: 'a', category: 'engineering' }), post({ slug: 'b', category: 'notes' })], 'engineering');
-    expect(out.map(p => p.slug)).toEqual(['a']);
+    const out = byCategory([post({ id: 'a', category: 'engineering' }), post({ id: 'b', category: 'notes' })], 'engineering');
+    expect(out.map(p => p.id)).toEqual(['a']);
   });
 });
 
 describe('byProject', () => {
   it('filters by project', () => {
-    const out = byProject([post({ slug: 'a', project: 'saju-app' }), post({ slug: 'b' })], 'saju-app');
-    expect(out.map(p => p.slug)).toEqual(['a']);
+    const out = byProject([post({ id: 'a', project: 'saju-app' }), post({ id: 'b' })], 'saju-app');
+    expect(out.map(p => p.id)).toEqual(['a']);
   });
 });
 
@@ -814,12 +815,13 @@ Create `src/integrations/ogImage.ts`:
 ```ts
 import { OGImageRoute } from 'astro-og-canvas';
 import { getCollection } from 'astro:content';
+import { toUrlSlug } from './posts';
 
 const posts = await getCollection('posts');
 
-// key = URL slug, value = 카테고리(영어 텍스트만)
+// key = URL slug (from entry.id, Astro 7 glob loader), value = 카테고리(영어 텍스트만)
 const pages = Object.fromEntries(
-  posts.map((p) => [p.slug, { category: p.data.category }]),
+  posts.map((p) => [toUrlSlug(p.id), { category: p.data.category }]),
 );
 
 export const { getStaticPaths, GET } = OGImageRoute({
@@ -882,7 +884,7 @@ import { toUrlSlug } from '../core/posts';
 import type { Post } from '../core/posts';
 export interface Props { post: Post; }
 const { post } = Astro.props;
-const href = `/blog/${toUrlSlug(post.slug)}`;
+const href = `/blog/${toUrlSlug(post.id)}`;
 ---
 <a href={href} class="block">
   <p class="text-xs text-gray-500">{post.data.date.toISOString().slice(0, 10)} - {post.data.category}</p>
@@ -996,24 +998,25 @@ Create `src/pages/blog/[...slug].astro`:
 ```astro
 ---
 import PostLayout from '../../layouts/PostLayout.astro';
+import { render } from 'astro:content';
 import { getPublishedPosts } from '../../core/queries';
 import { toUrlSlug } from '../../core/posts';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
   return posts.map((post) => ({
-    params: { slug: toUrlSlug(post.slug) },
+    params: { slug: toUrlSlug(post.id) },
     props: { post },
   }));
 }
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 <PostLayout post={post}>
   <Content />
 </PostLayout>
 ```
-Note: `getPublishedPosts()`만 쓰므로 draft(`.draft.md` 또는 `draft:true`)는 페이지가 안 생김. 초안 미리보기는 dev에서 URL 직접 접근이 아니라 별도 확인(아래 Step 3).
+Note: Astro 7 glob loader — `post.id`(슬러그 원본) + `render(post)`(엔트리 메서드 아님). `getPublishedPosts()`만 쓰므로 draft(`.draft.md` 또는 `draft:true`)는 페이지가 안 생김. 초안 미리보기는 dev에서 URL 직접 접근이 아니라 별도 확인(아래 Step 3).
 
 - [ ] **Step 3: 확인 (초안 미리보기 포함)**
 
@@ -1055,6 +1058,7 @@ Create `src/pages/projects/[slug].astro`:
 ```astro
 ---
 import ProjectLayout from '../../layouts/ProjectLayout.astro';
+import { render } from 'astro:content';
 import { getProjects, getPublishedPosts } from '../../core/queries';
 import { byProject, type ProjectKey } from '../../core/posts';
 
@@ -1067,7 +1071,7 @@ export async function getStaticPaths() {
   }));
 }
 const { project, buildLogs } = Astro.props;
-const { Content } = await project.render();
+const { Content } = await render(project);
 ---
 <ProjectLayout project={project} buildLogs={buildLogs}>
   <Content />
@@ -1171,7 +1175,7 @@ export async function GET(context: APIContext) {
       title: p.data.title,
       description: p.data.description,
       pubDate: p.data.date,
-      link: `/blog/${toUrlSlug(p.slug)}`,
+      link: `/blog/${toUrlSlug(p.id)}`,
     })),
   });
 }
