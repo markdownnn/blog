@@ -1,6 +1,19 @@
-# 개인 블로그 스펙 (v0.4)
+# 개인 블로그 스펙 (v0.5)
+
+> 현재 상태: **라이브** — https://blog.teamnyongs.com
 
 ## 0. 변경 이력
+
+### v0.4 → v0.5 (실제 구축 반영)
+
+- **호스팅 확정: Cloudflare Workers (Static Assets)** + 커스텀 도메인 `blog.teamnyongs.com`. Vercel에서 변경 ([ADR 0002](docs/adr/0002-vercel-hosting.md) 갱신). 정적 사이트라 어댑터 불필요.
+- **자동배포: Cloudflare Workers Builds**. GitHub `main` push → 자동 빌드+배포. "push=배포 끝" 유지. PostHog `PUBLIC_*`는 Workers Builds의 **build variables**에 등록(런타임 변수 아님 — assets-only Worker엔 런타임 변수 불가).
+- **댓글 연결 완료: Giscus**. 같은 repo `markdownnn/blog`의 Discussions(Announcements 카테고리, pathname 매핑). repo-id/category-id는 공개 값이라 `integrations/Comments.astro`에 인라인.
+- **`blog-publish` 스킬 구축**: `.claude/skills/blog-publish/`. redact 스캔 → rename(`mv`, `git mv` 아님 — 초안이 gitignore) → build → commit → push. 배포는 Workers Builds가. end-to-end 검증 완료.
+- **디자인 1차**: Pretendard 폰트 + `@tailwindcss/typography`(prose) + 절제된 레이아웃 + 인디고 액센트. (다크 모드는 아직 X)
+- **커스텀 도메인 오픈퀘스천 종료**: `blog.teamnyongs.com`로 처음부터 시작(→ 나중 이사 시 링크·SEO 깨질 일 없음).
+- **OG 오픈퀘스천 종료**: 옵션 (a) 채택 — 제목 없이 **영어 사이트명 + 카테고리**. 한글 폰트 회피, 구현됨.
+- **금칙어 정리**: 부분문자열 오탐 나는 짧은 항목 제거(`Ben`→"benefit", `벤`→"이벤트" 등). 로컬 `~/.blog-redact-terms.txt`만 수정(repo 미반영, 설계상).
 
 ### v0.3 → v0.4 (적대적 리뷰 반영)
 
@@ -34,9 +47,9 @@
 | 언어 | TypeScript | `core/`는 `.ts`, 타입은 `CollectionEntry`로 통일 |
 | 콘텐츠 포맷 | Markdown / MDX | mdx는 인터랙티브 요소 필요할 때만 |
 | 콘텐츠 관리 | Astro Content Collections | frontmatter 스키마 타입 체크 |
-| 배포 | Vercel | GitHub 연동, push 시 자동 빌드, PR 미리보기 |
+| 배포 | **Cloudflare Workers** (Static Assets) | `wrangler.jsonc` assets + custom domain. Workers Builds로 push 자동배포 |
 | 저장소 | GitHub public (단일) | 코드·콘텐츠·댓글 한 지붕. 초안은 로컬만 |
-| 스타일링 | Tailwind CSS | Astro 공식 통합 |
+| 스타일링 | Tailwind CSS v4 (+ typography 플러그인) | `@tailwindcss/vite`. 본문은 `prose`. 폰트 Pretendard |
 | 코드 하이라이팅 | astro-expressive-code | 코드블록 하이라이트 + 복사버튼 |
 | 검색 | Pagefind (나중) | 글 30~50개 넘으면. 그전엔 태그 필터 |
 | 댓글 | Giscus + 같은 repo의 Discussions | 아래 6번 |
@@ -254,11 +267,11 @@ tailwind.config.mjs
 8. OG 이미지 생성 (`astro-og-canvas`) — 텍스트 방식은 12번 결정 따름
 9. `.gitignore`에 `src/content/posts/*.draft.md` + `scripts/pre-push.sh` 작성 + 훅 설치
 10. 예시 발행 포스트 1개 + 프로젝트 3개(CTA 링크 포함, CtaButton이 PostHog 전환 이벤트 발생)
-11. GitHub public repo → Discussions 켜기 → Vercel 연결 → 첫 배포
-12. Giscus 설정(같은 repo Discussions) → `Comments.astro` 연결. PostHog 프로젝트 키 → `Analytics.astro`
-13. `blog-draft`/`blog-publish` 스킬 설치 확인 (`.draft.md` 흐름 반영)
-14. (선택) Pagefind 검색
-15. (선택) 커스텀 도메인 — 지금은 `*.vercel.app`
+11. GitHub public repo → Discussions 켜기 → **Cloudflare Workers 배포**(`wrangler.jsonc` assets + custom domain `blog.teamnyongs.com`)
+12. **Cloudflare Workers Builds**로 GitHub repo 연결(자동배포) + build variables에 PostHog 키
+13. Giscus 설정(같은 repo Discussions, Announcements) → `Comments.astro` 인라인. PostHog 키 → `.env` + build variables
+14. `blog-publish` 스킬(`.claude/skills/`) — `.draft.md` → `.md` 흐름. (`blog-draft`는 아직 미구축)
+15. (선택) Pagefind 검색 · 다크 모드
 
 ## 11. Out of Scope (v0.4)
 
@@ -270,10 +283,15 @@ tailwind.config.mjs
 - 정식 헥사고날(포트/DI), 프레임워크 이식성 추상화 — 과설계
 - 글 주제 백로그, 초안 백업/동기화
 
-## 12. 남은 오픈 퀘스천
+## 12. 해소된 오픈 퀘스천 / 남은 선택
 
-- **OG 이미지 텍스트**: 제목이 한국어라 "영어 고정"으론 안 풀림. 두 선택지 —
-  (a) OG엔 제목 없이 **사이트 이름 + 카테고리 뱃지(영어)**만. 폰트 문제 0, 밋밋함. ← 런치 기본 추천
-  (b) 한글 폰트 **서브셋**(자주 쓰는 글자만)해서 satori에 먹임. 제목 나옴, 초기 세팅 한 번 고생.
-  → 첫 글 쓸 때 결정.
-- **커스텀 도메인 시점**: 지금 `*.vercel.app`. 외부 링크·검색 순위 붙기 **전에** 옮길지 이직 활동 본격화 때 재검토.
+**해소됨 (v0.5)**
+- ~~OG 이미지 텍스트~~ → 옵션 (a) 채택: 제목 없이 영어 사이트명 + 카테고리. 구현됨.
+- ~~커스텀 도메인 시점~~ → 처음부터 `blog.teamnyongs.com`. Cloudflare.
+
+**남은 선택 (급하지 않음)**
+- **다크 모드**: 미구현. 넣으면 giscus 테마도 `preferred_color_scheme`로 연동.
+- **`blog-draft` 스킬**: 초안 생성 자동화(익명화 처음부터 적용). `blog-publish`의 짝.
+- **금칙어 세밀화**: 회사명 `Liner`는 부분문자열이라 "one-liner/eyeliner" 등을 오탐 → 실제 글에서 걸리면 그때 조정.
+- **Pagefind 검색**: 글 30~50개 넘으면.
+- **about 실제 경력**으로 채우기(현재 플레이스홀더).
