@@ -6,7 +6,7 @@ const { post } = Astro.props;
 const href = `/blog/${toUrlSlug(post.id)}`;
 ---
 <a href={href} class="group block py-3">
-  <p class="text-xs text-zinc-400 mb-1">{post.data.date.toISOString().slice(0, 10)} · {post.data.category}</p>
-  <p class="font-semibold text-zinc-900 group-hover:text-indigo-600 transition">{post.data.title}</p>
-  <p class="text-sm text-zinc-500 mt-0.5">{post.data.description}</p>
+  <p class="text-xs text-zinc-400 mb-1 dark:text-zinc-500">{post.data.date.toISOString().slice(0, 10)} · {post.data.category}</p>
+  <p class="font-semibold text-zinc-900 group-hover:text-indigo-600 transition dark:text-zinc-100 dark:group-hover:text-indigo-400">{post.data.title}</p>
+  <p class="text-sm text-zinc-500 mt-0.5 dark:text-zinc-400">{post.data.description}</p>
 </a>

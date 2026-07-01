@@ -9,15 +9,15 @@ const { title, tagline, status, stack, links } = project.data;
 ---
 <BaseLayout title={title} description={tagline}>
   <h1 class="text-3xl font-bold tracking-tight">{title}</h1>
-  <p class="text-lg text-zinc-500">{tagline}</p>
-  <p class="text-xs text-zinc-400 mt-2">status: {status} - stack: {stack.join(', ')}</p>
+  <p class="text-lg text-zinc-500 dark:text-zinc-400">{tagline}</p>
+  <p class="text-xs text-zinc-400 mt-2 dark:text-zinc-500">status: {status} - stack: {stack.join(', ')}</p>
   <div class="mt-4 flex flex-wrap gap-2">
     {links?.waitlist && <CtaButton href={links.waitlist} project={project.id} label="Join waitlist" />}
     {links?.store && <CtaButton href={links.store} project={project.id} label="Install" />}
   </div>
-  <div class="prose prose-zinc max-w-none mt-6"><slot /></div>
-  <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mt-14 mb-3">Build log</h2>
-  <ul class="divide-y divide-zinc-100">
+  <div class="prose prose-zinc max-w-none mt-6 dark:prose-invert"><slot /></div>
+  <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mt-14 mb-3 dark:text-zinc-500">Build log</h2>
+  <ul class="divide-y divide-zinc-100 dark:divide-zinc-800">
     {buildLogs.map((p) => <li><PostCard post={p} /></li>)}
   </ul>
 </BaseLayout>

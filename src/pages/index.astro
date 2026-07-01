@@ -8,11 +8,11 @@ const projects = await getProjects();
 ---
 <BaseLayout title="mark - building in public" description="엔지니어가 사이드 프로젝트를 출시까지 끌고 가는 기록">
   <section>
-    <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">최근 글</h2>
-    <ul class="divide-y divide-zinc-100">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3 dark:text-zinc-500">최근 글</h2>
+    <ul class="divide-y divide-zinc-100 dark:divide-zinc-800">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
   </section>
   <section class="mt-14">
-    <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">프로젝트</h2>
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3 dark:text-zinc-500">프로젝트</h2>
     <div class="grid gap-4 sm:grid-cols-2">{projects.map((p) => <ProjectCard project={p} />)}</div>
   </section>
 </BaseLayout>

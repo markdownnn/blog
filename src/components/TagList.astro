@@ -4,6 +4,6 @@ const { tags } = Astro.props;
 ---
 {tags.length > 0 && (
   <ul class="flex gap-2 flex-wrap my-2">
-    {tags.map((t) => <li><a class="text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition no-underline" href={`/tags/${t}`}>#{t}</a></li>)}
+    {tags.map((t) => <li><a class="text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition no-underline dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700" href={`/tags/${t}`}>#{t}</a></li>)}
   </ul>
 )}

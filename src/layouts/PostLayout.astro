@@ -10,13 +10,13 @@ const { title, description, date, updated, tags, ogImage } = post.data;
 <BaseLayout title={title} description={description} ogImage={ogImage}>
   <article>
     <h1 class="text-3xl font-bold tracking-tight">{title}</h1>
-    <p class="text-sm text-zinc-400 mt-2">
+    <p class="text-sm text-zinc-400 mt-2 dark:text-zinc-500">
       {date.toISOString().slice(0, 10)}
       {updated && ` (updated ${updated.toISOString().slice(0, 10)})`}
     </p>
     <TagList tags={tags} />
-    <div class="prose prose-zinc mt-8 max-w-none"><slot /></div>
+    <div class="prose prose-zinc mt-8 max-w-none dark:prose-invert"><slot /></div>
   </article>
-  <hr class="my-8 border-zinc-200" />
+  <hr class="my-8 border-zinc-200 dark:border-zinc-800" />
   <Comments />
 </BaseLayout>

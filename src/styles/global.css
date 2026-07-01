@@ -7,13 +7,13 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-white text-zinc-900 antialiased;
+    @apply bg-white text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100;
     font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
   a {
-    @apply text-indigo-600 hover:text-indigo-700 transition;
+    @apply text-indigo-600 hover:text-indigo-700 transition dark:text-indigo-400 dark:hover:text-indigo-300;
   }
   ::selection {
-    @apply bg-indigo-100 text-indigo-900;
+    @apply bg-indigo-100 text-indigo-900 dark:bg-indigo-900 dark:text-indigo-100;
   }
 }
