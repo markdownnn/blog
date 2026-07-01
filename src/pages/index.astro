@@ -1,17 +1,18 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getPublishedPosts, getProjects } from '../core/queries';
+const posts = (await getPublishedPosts()).slice(0, 5);
+const projects = await getProjects();
 ---
-
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="mark - building in public" description="엔지니어가 사이드 프로젝트를 출시까지 끌고 가는 기록">
+  <section>
+    <h2 class="text-xl font-bold">최근 글</h2>
+    <ul class="mt-4 space-y-4">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
+  </section>
+  <section class="mt-10">
+    <h2 class="text-xl font-bold">프로젝트</h2>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">{projects.map((p) => <ProjectCard project={p} />)}</div>
+  </section>
+</BaseLayout>
