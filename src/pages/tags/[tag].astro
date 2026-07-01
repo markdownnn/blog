@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts } from '../../core/queries';
+import { byTag } from '../../core/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({ params: { tag }, props: { posts: byTag(posts, tag), tag } }));
+}
+const { posts, tag } = Astro.props;
+---
+<BaseLayout title={`#${tag} - mark`} description={`태그 ${tag} 글 모음`}>
+  <h1 class="text-2xl font-bold">#{tag}</h1>
+  <ul class="mt-6 space-y-4">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
+</BaseLayout>
