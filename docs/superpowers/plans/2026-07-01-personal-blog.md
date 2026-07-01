@@ -451,8 +451,11 @@ if [ -z "$terms" ] || [ ! -f "$terms" ]; then
   exit 2
 fi
 
-# non-empty, non-comment lines only
-mapfile -t words < <(grep -v -E '^[[:space:]]*($|#)' "$terms" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' | grep -v '^$')
+# non-empty, non-comment lines only (bash 3.2 compatible: no mapfile)
+words=()
+while IFS= read -r line; do
+  [ -n "$line" ] && words+=("$line")
+done < <(grep -v -E '^[[:space:]]*($|#)' "$terms" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')
 if [ "${#words[@]}" -lt 1 ]; then
   echo "redact-check: terms file has no usable terms (fail-closed, blocking)" >&2
   exit 2
@@ -490,8 +493,11 @@ set -u
 HERE="$(cd "$(dirname "$0")" && pwd)"
 TERMS="$HOME/.blog-redact-terms.txt"
 
-# tracked content files that will go public
-mapfile -t files < <(git ls-files 'src/content/posts/*.md' 'src/content/posts/*.mdx' 'src/content/projects/*.md' 'src/content/projects/*.mdx')
+# tracked content files that will go public (bash 3.2 compatible: no mapfile)
+files=()
+while IFS= read -r line; do
+  [ -n "$line" ] && files+=("$line")
+done < <(git ls-files 'src/content/posts/*.md' 'src/content/posts/*.mdx' 'src/content/projects/*.md' 'src/content/projects/*.mdx')
 if [ "${#files[@]}" -eq 0 ]; then exit 0; fi
 
 if ! bash "$HERE/redact-check.sh" "$TERMS" "${files[@]}"; then
