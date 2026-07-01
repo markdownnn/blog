@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts } from '../../core/queries';
+const posts = await getPublishedPosts();
+---
+<BaseLayout title="Blog - mark" description="engineering, build-log, notes">
+  <h1 class="text-2xl font-bold">Blog</h1>
+  <ul class="mt-6 space-y-4">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
+</BaseLayout>
