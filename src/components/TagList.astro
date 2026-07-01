@@ -1,0 +1,9 @@
+---
+export interface Props { tags: string[]; }
+const { tags } = Astro.props;
+---
+{tags.length > 0 && (
+  <ul class="flex gap-2 flex-wrap text-xs my-2">
+    {tags.map((t) => <li><a class="underline" href={`/tags/${t}`}>#{t}</a></li>)}
+  </ul>
+)}

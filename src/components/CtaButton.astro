@@ -1,0 +1,13 @@
+---
+export interface Props { href: string; label: string; project: string; }
+const { href, label, project } = Astro.props;
+---
+<a href={href} target="_blank" rel="noopener" data-cta={project}
+   class="inline-block bg-black text-white rounded px-4 py-2 my-2 text-sm">{label}</a>
+<script is:inline>
+  document.querySelectorAll('a[data-cta]').forEach((el) => {
+    el.addEventListener('click', () => {
+      if (window.posthog) window.posthog.capture('cta_click', { project: el.getAttribute('data-cta') });
+    });
+  });
+</script>

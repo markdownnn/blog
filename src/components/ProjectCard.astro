@@ -1,0 +1,10 @@
+---
+import type { Project } from '../core/posts';
+export interface Props { project: Project; }
+const { project } = Astro.props;
+---
+<a href={`/projects/${project.id}`} class="block border rounded p-4">
+  <p class="font-semibold">{project.data.title}</p>
+  <p class="text-sm text-gray-600">{project.data.tagline}</p>
+  <p class="text-xs mt-1">status: {project.data.status}</p>
+</a>
