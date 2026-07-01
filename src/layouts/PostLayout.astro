@@ -1,0 +1,22 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Comments from '../integrations/Comments.astro';
+import TagList from '../components/TagList.astro';
+import type { Post } from '../core/posts';
+export interface Props { post: Post; }
+const { post } = Astro.props;
+const { title, description, date, updated, tags, ogImage } = post.data;
+---
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <article class="prose max-w-none">
+    <h1>{title}</h1>
+    <p class="text-sm text-gray-500">
+      {date.toISOString().slice(0, 10)}
+      {updated && ` (updated ${updated.toISOString().slice(0, 10)})`}
+    </p>
+    <TagList tags={tags} />
+    <slot />
+  </article>
+  <hr class="my-8" />
+  <Comments />
+</BaseLayout>
