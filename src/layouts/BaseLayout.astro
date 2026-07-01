@@ -22,7 +22,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />
-    <main class="mx-auto max-w-3xl w-full flex-1 p-4"><slot /></main>
+    <main class="max-w-2xl w-full mx-auto px-5 py-12 flex-1"><slot /></main>
     <Footer />
   </body>
 </html>

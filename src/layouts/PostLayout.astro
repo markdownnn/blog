@@ -8,15 +8,15 @@ const { post } = Astro.props;
 const { title, description, date, updated, tags, ogImage } = post.data;
 ---
 <BaseLayout title={title} description={description} ogImage={ogImage}>
-  <article class="prose max-w-none">
-    <h1>{title}</h1>
-    <p class="text-sm text-gray-500">
+  <article>
+    <h1 class="text-3xl font-bold tracking-tight">{title}</h1>
+    <p class="text-sm text-zinc-400 mt-2">
       {date.toISOString().slice(0, 10)}
       {updated && ` (updated ${updated.toISOString().slice(0, 10)})`}
     </p>
     <TagList tags={tags} />
-    <slot />
+    <div class="prose prose-zinc mt-8 max-w-none"><slot /></div>
   </article>
-  <hr class="my-8" />
+  <hr class="my-8 border-zinc-200" />
   <Comments />
 </BaseLayout>

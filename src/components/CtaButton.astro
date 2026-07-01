@@ -3,7 +3,7 @@ export interface Props { href: string; label: string; project: string; }
 const { href, label, project } = Astro.props;
 ---
 <a href={href} target="_blank" rel="noopener" data-cta={project}
-   class="inline-block bg-black text-white rounded px-4 py-2 my-2 text-sm">{label}</a>
+   class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition">{label}</a>
 <script is:inline>
   document.querySelectorAll('a[data-cta]').forEach((el) => {
     el.addEventListener('click', () => {

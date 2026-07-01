@@ -3,7 +3,7 @@ export interface Props { tags: string[]; }
 const { tags } = Astro.props;
 ---
 {tags.length > 0 && (
-  <ul class="flex gap-2 flex-wrap text-xs my-2">
-    {tags.map((t) => <li><a class="underline" href={`/tags/${t}`}>#{t}</a></li>)}
+  <ul class="flex gap-2 flex-wrap my-2">
+    {tags.map((t) => <li><a class="text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition no-underline" href={`/tags/${t}`}>#{t}</a></li>)}
   </ul>
 )}

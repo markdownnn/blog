@@ -12,6 +12,6 @@ export async function getStaticPaths() {
 const { posts, tag } = Astro.props;
 ---
 <BaseLayout title={`#${tag} - mark`} description={`태그 ${tag} 글 모음`}>
-  <h1 class="text-2xl font-bold">#{tag}</h1>
-  <ul class="mt-6 space-y-4">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
+  <h1 class="text-2xl font-bold tracking-tight mb-8">#{tag}</h1>
+  <ul class="divide-y divide-zinc-100">{posts.map((p) => <li><PostCard post={p} /></li>)}</ul>
 </BaseLayout>

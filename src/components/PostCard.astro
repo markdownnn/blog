@@ -5,8 +5,8 @@ export interface Props { post: Post; }
 const { post } = Astro.props;
 const href = `/blog/${toUrlSlug(post.id)}`;
 ---
-<a href={href} class="block">
-  <p class="text-xs text-gray-500">{post.data.date.toISOString().slice(0, 10)} - {post.data.category}</p>
-  <p class="font-semibold">{post.data.title}</p>
-  <p class="text-sm text-gray-600">{post.data.description}</p>
+<a href={href} class="group block py-3">
+  <p class="text-xs text-zinc-400 mb-1">{post.data.date.toISOString().slice(0, 10)} · {post.data.category}</p>
+  <p class="font-semibold text-zinc-900 group-hover:text-indigo-600 transition">{post.data.title}</p>
+  <p class="text-sm text-zinc-500 mt-0.5">{post.data.description}</p>
 </a>

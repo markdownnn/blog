@@ -8,14 +8,16 @@ const { project, buildLogs } = Astro.props;
 const { title, tagline, status, stack, links } = project.data;
 ---
 <BaseLayout title={title} description={tagline}>
-  <h1 class="text-2xl font-bold">{title}</h1>
-  <p class="text-gray-600">{tagline}</p>
-  <p class="text-xs mt-1">status: {status} - stack: {stack.join(', ')}</p>
-  {links?.waitlist && <CtaButton href={links.waitlist} project={project.id} label="Join waitlist" />}
-  {links?.store && <CtaButton href={links.store} project={project.id} label="Install" />}
-  <div class="prose max-w-none mt-6"><slot /></div>
-  <h2 class="text-xl font-bold mt-10">Build log</h2>
-  <ul class="mt-4 space-y-4">
+  <h1 class="text-3xl font-bold tracking-tight">{title}</h1>
+  <p class="text-lg text-zinc-500">{tagline}</p>
+  <p class="text-xs text-zinc-400 mt-2">status: {status} - stack: {stack.join(', ')}</p>
+  <div class="mt-4 flex flex-wrap gap-2">
+    {links?.waitlist && <CtaButton href={links.waitlist} project={project.id} label="Join waitlist" />}
+    {links?.store && <CtaButton href={links.store} project={project.id} label="Install" />}
+  </div>
+  <div class="prose prose-zinc max-w-none mt-6"><slot /></div>
+  <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 mt-14 mb-3">Build log</h2>
+  <ul class="divide-y divide-zinc-100">
     {buildLogs.map((p) => <li><PostCard post={p} /></li>)}
   </ul>
 </BaseLayout>

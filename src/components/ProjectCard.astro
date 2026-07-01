@@ -3,8 +3,8 @@ import type { Project } from '../core/posts';
 export interface Props { project: Project; }
 const { project } = Astro.props;
 ---
-<a href={`/projects/${project.id}`} class="block border rounded p-4">
-  <p class="font-semibold">{project.data.title}</p>
-  <p class="text-sm text-gray-600">{project.data.tagline}</p>
-  <p class="text-xs mt-1">status: {project.data.status}</p>
+<a href={`/projects/${project.id}`} class="group block rounded-xl border border-zinc-200 p-5 hover:border-zinc-300 hover:shadow-sm transition">
+  <p class="font-semibold group-hover:text-indigo-600">{project.data.title}</p>
+  <p class="text-sm text-zinc-500 mt-1">{project.data.tagline}</p>
+  <p class="mt-3 inline-block text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600">{project.data.status}</p>
 </a>
