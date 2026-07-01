@@ -1,23 +1,24 @@
 ---
-const repo = import.meta.env.PUBLIC_GISCUS_REPO;
-const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
-const category = import.meta.env.PUBLIC_GISCUS_CATEGORY ?? 'General';
-const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
+// Giscus config. These IDs are PUBLIC (visible in the client script on every page),
+// so they are inlined here rather than kept in build env vars. To swap comment
+// providers or repos later, edit only this file.
+const repo = 'markdownnn/blog';
+const repoId = 'R_kgDOTKGv8g';
+const category = 'Announcements';
+const categoryId = 'DIC_kwDOTKGv8s4DAQNy';
 ---
-{repoId && categoryId && (
-  <script is:inline src="https://giscus.app/client.js"
-    data-repo={repo}
-    data-repo-id={repoId}
-    data-category={category}
-    data-category-id={categoryId}
-    data-mapping="pathname"
-    data-strict="1"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="light"
-    data-lang="ko"
-    crossorigin="anonymous"
-    async>
-  </script>
-)}
+<script is:inline src="https://giscus.app/client.js"
+  data-repo={repo}
+  data-repo-id={repoId}
+  data-category={category}
+  data-category-id={categoryId}
+  data-mapping="pathname"
+  data-strict="1"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="light"
+  data-lang="ko"
+  crossorigin="anonymous"
+  async>
+</script>
