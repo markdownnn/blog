@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../core/queries';
+const projects = await getProjects();
+---
+<BaseLayout title="Projects - mark" description="사주앱, recall, 인디게임">
+  <h1 class="text-2xl font-bold">Projects</h1>
+  <div class="mt-6 grid gap-4 sm:grid-cols-2">{projects.map((p) => <ProjectCard project={p} />)}</div>
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+import { render } from 'astro:content';
+import { getProjects, getPublishedPosts } from '../../core/queries';
+import { byProject, type ProjectKey } from '../../core/posts';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  const posts = await getPublishedPosts();
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project, buildLogs: byProject(posts, project.id as ProjectKey) },
+  }));
+}
+const { project, buildLogs } = Astro.props;
+const { Content } = await render(project);
+---
+<ProjectLayout project={project} buildLogs={buildLogs}>
+  <Content />
+</ProjectLayout>
